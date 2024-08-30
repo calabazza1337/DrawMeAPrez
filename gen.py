@@ -290,6 +290,7 @@ def generate_bbcode(movie_title, tmdb_id, nfo_file_path):
     [b]Source :[/b]
     [b]Nombre de fichier(s) :[/b] 1
     [b]Poids Total :[/b] {file_size_str}[/center]
+    [url=https://github.com/calabazza1337/DrawMeAPrez]Prez construit avec DMAP[/url][/center]
     """
 
     return bbcode
