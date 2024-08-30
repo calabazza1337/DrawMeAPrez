@@ -17,4 +17,4 @@ python generate_bbcode.py "Movie Title" tmdb-id /path/to/nfo_file.nfo --tracker_
 ```
 
 ## Get TMDB api key
-Create TMDB account then go [https://www.themoviedb.org/settings/api][https://www.themoviedb.org/settings/api]
+Create TMDB account then go https://www.themoviedb.org/settings/api
