@@ -3,7 +3,7 @@ This script generates BBCode and an NFO file for a movie using TMDB data. It als
 
 The BBCode is generated using the provided movie title, TMDB ID, and some other details fetched from TMDB API. The NFO file is created by running `mediainfo` command on the given video file path. If the 
 `--tracker_url` option is specified, a torrent file will be generated using the specified tracker URL.
-
+# PLEASE CONTRIBUTE ! Do NOT make private versions, share them, pls :)
 ## Install
 Here's a brief explanation of how to use this script:
 
