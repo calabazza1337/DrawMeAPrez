@@ -7,11 +7,17 @@ spécifié. Si l'option `--tracker_url` est fournie, un fichier torrent sera gé
 
 # SVP CONTRIBUEZ ! N'en fais pas des versions privées, les partagez, s'il vous plaît :)
 ## Installation
-Voici une brève explication sur comment utiliser ce script :
+Voici une brève explication sur comment installer ce script :
 
-1. Installez les paquets requis (par exemple, `argparse`, `subprocess`).
-2. Enregistrez ce script sous le nom de `generate_bbcode.py`.
-3. Exécutez le script en ligne de commande en fournissant les arguments nécessaires :
+1. Enregistrez ce script sous le nom de `generate_bbcode.py`.
+```bash
+git clone https://github.com/calabazza1337/DrawMeAPrez && cd DrawMeAPrez
+```
+2. Installez les paquets requis (par exemple, `argparse`, `subprocess`).
+```bash
+pip install -r requirements.txt
+```
+3. RUN
 
 ## Utilisation
 ```bash
@@ -32,9 +38,15 @@ The BBCode is generated using the provided movie title, TMDB ID, and some other 
 ## Install
 Here's a brief explanation of how to use this script:
 
-1. Install the required packages (e.g., `argparse`, `subprocess`).
-2. Save this script as `generate_bbcode.py`.
-3. Run the script using the command line, providing the necessary arguments:
+1. Save this script as `generate_bbcode.py`.
+```bash
+git clone https://github.com/calabazza1337/DrawMeAPrez && cd DrawMeAPrez
+```
+2. Install the required packages (for example, `argparse`, `subprocess`).
+```bash
+pip install -r requirements.txt
+```
+3. RUN it like you mean it
 
 ## Usage
 ```bash
