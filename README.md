@@ -1,6 +1,6 @@
 # French
 # DrawMeAPrez
-Ce script génère du BBCode et un fichier NFO pour un film en utilisant des données TMDB. Il propose également la possibilité de générer un fichier torrent avec une URL de serveur tracker spécifiée.
+Ce script génère du BBCode et/grâce à un fichier NFO pour un film en utilisant des données TMDB. Il propose également la possibilité de générer un fichier torrent avec une URL de serveur tracker spécifiée.
 
 Le BBCode est généré à l'aide du titre de film fourni, de l'ID TMDB et d'autres détails récoltés via l'API TMDB. Le fichier NFO est créé en exécutant la commande `mediainfo` sur le chemin du fichier vidéo 
 spécifié. Si l'option `--tracker_url` est fournie, un fichier torrent sera généré à l'aide de l'URL de serveur tracker spécifiée.
@@ -24,7 +24,7 @@ Créez un compte TMDB puis allez sur https://www.themoviedb.org/settings/api
 
 # English
 # DrawMeAPrez
-This script generates BBCode and an NFO file for a movie using TMDB data. It also provides options to generate a torrent file with a specified tracker URL.
+This script generates a BBCode and/from an NFO file for a movie using TMDB data. It also provides options to generate a torrent file with a specified tracker URL.
 
 The BBCode is generated using the provided movie title, TMDB ID, and some other details fetched from TMDB API. The NFO file is created by running `mediainfo` command on the given video file path. If the 
 `--tracker_url` option is specified, a torrent file will be generated using the specified tracker URL.
