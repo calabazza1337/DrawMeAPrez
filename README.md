@@ -13,8 +13,9 @@ Here's a brief explanation of how to use this script:
 
 ## Usage
 ```bash
-python generate_bbcode.py "Movie Title" tmdb-id /path/to/nfo_file.nfo --tracker_url http://tracker.example.com
+python generate_bbcode.py "Movie Title" tmdb-id /path/to/movie.mkv --tracker_url http://tracker.example.com
 ```
+NFO is written in the same folder as the movie
 
 ## Get TMDB api key
 Create TMDB account then go https://www.themoviedb.org/settings/api
