@@ -8,36 +8,37 @@ import iso639
 
 def get_tmdb_details(tmdb_id):
     tmdb = TMDb()
-    tmdb.api_key = ''  # Enter your TMDB API key
+    tmdb.api_key = ''  # Mettre la clef API TMDB ici / Enter your TMDB API key
     movie = Movie()
-    tmdb.language = 'fr'
-    details = movie.details(tmdb_id)  # Request details in French
+    tmdb.language = 'fr' # Langue des détailles / lang of details
+    details = movie.details(tmdb_id)  # Recupérer les détailles / get details
 
     # Fetch credits separately
     credits = movie.credits(tmdb_id)
 
-    # Check if the French poster is available
+    # Vérifier la disponibilité du poster en français / Check if the French poster is available
     if details.poster_path:
         cover_url = f"https://image.tmdb.org/t/p/w500{details.poster_path}"
     else:
-        # Fallback to English poster if French is not available
+        # Se rabattre sur le poster en Anglais si Français pas dispo / Fallback to English poster if French is not available
         tmdb.language = 'en'
         details_en = movie.details(tmdb_id)
         cover_url = f"https://image.tmdb.org/t/p/w500{details_en.poster_path}"
 
-    director = ", ".join([crew['name'] for crew in credits.crew if crew['job'] == 'Director'])
+    director = ", ".join([crew['name'] for crew in credits.crew if crew['job'] == 'Director']) # Récuperer le nom du producteur / get name of Director
+    # Récupérer le top 5 des acteurs du film 
     actors = []
-    for cast in list(credits.cast)[:5]:  # Top 5 actors
+    for cast in list(credits.cast)[:5]:
         actor_name = cast['name']
         actor_image = f"https://image.tmdb.org/t/p/w138_and_h175_face{cast['profile_path']}" if cast['profile_path'] else None
         actors.append((actor_name, actor_image))
 
-    genres = ", ".join([genre['name'] for genre in list(details.genres)[:3]])  # Limit to 3 genres
-    country_of_origin = ", ".join([country['name'] for country in details.production_countries])
-    date_of_release = details.release_date
-    runtime = f"{details.runtime // 60}h et {details.runtime % 60}min"
-    tmdb_link = f"https://www.themoviedb.org/movie/{tmdb_id}"
-    trailer_link = f"https://www.youtube.com/watch?v={details.videos.results[0]['key']}" if details.videos.results else None
+    genres = ", ".join([genre['name'] for genre in list(details.genres)[:3]])  # Récupérer les genres du film et le limiter à 3 / Get the genres of the movie then limit it to 3
+    country_of_origin = ", ".join([country['name'] for country in details.production_countries]) # Récupérer le pays de production / get country of production
+    date_of_release = details.release_date # Récupérer la date de sortie / get release date
+    runtime = f"{details.runtime // 60}h et {details.runtime % 60}min" # Récupérer la longueur du film / get runtime of movie
+    tmdb_link = f"https://www.themoviedb.org/movie/{tmdb_id}" # Générer le lien TMDB / generate TMDB link
+    trailer_link = f"https://www.youtube.com/watch?v={details.videos.results[0]['key']}" if details.videos.results else None # Récupérer le trailer si disponible / get movie trailer if available 
 
     return {
         'cover_url': cover_url,
@@ -55,21 +56,21 @@ def get_allocine_synopsis(movie_title):
     base_url = "https://www.allocine.fr"
     search_url = f"{base_url}/rechercher/?q={movie_title}"
 
-    # Make a request to the search page
+    # Faire une requête de recherche / Make a request to the search page
     response = requests.get(search_url)
     movie_soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find the synopsis and rating within the respective elements
+    # Récupérer le synopsis et la note spéctateur / Find the synopsis and rating
     synopsis_element = movie_soup.find('div', class_='content-txt')
     rating_element = movie_soup.find('span', class_='stareval-note')
 
-    # Extract text from elements or return None if not found
+    # Extraire les éléments si possible / Extract text from elements or return None if not found
     synopsis = synopsis_element.get_text(strip=True) if synopsis_element else None
     rating = rating_element.get_text(strip=True) if rating_element else None
 
     return synopsis, rating
 
-def map_codec(codec_id):
+def map_codec(codec_id): # NFO incompréhensible -> termes compréhensible / NFO gibberish -> common words
     codec_mapping = {
         'V_MPEG4/ISO/AVC': 'h264',
         'V_MPEGH/ISO/HEVC': 'h265',
@@ -107,7 +108,7 @@ def map_codec(codec_id):
     }
     return codec_mapping.get(codec_id, codec_id)
 
-def map_audio_codec(audio_codec_id):
+def map_audio_codec(audio_codec_id): # NFO incompréhensible -> termes compréhensible / NFO gibberish -> common words
     audio_codec_mapping = {
         'A_AAC-2': 'AAC',
         'A_AAC': 'AAC',
@@ -138,7 +139,7 @@ def map_audio_codec(audio_codec_id):
     }
     return audio_codec_mapping.get(audio_codec_id, audio_codec_id)
 
-def map_audio_channels(channels):
+def map_audio_channels(channels): # NFO -> termes plus compréhensible / NFO -> more common words
     channel_mapping = {
         1: 'Mono',
         2: 'Stereo',
@@ -152,23 +153,23 @@ def map_audio_channels(channels):
     return channel_mapping.get(channels, str(channels))
 
 
-def parse_nfo(file_path):
+def parse_nfo(file_path): # Mettre les infos du NFO dans des cases / Parse the NFO...
     media_info = MediaInfo.parse(file_path)
 
-    # Find the video track
+    # Extraire les pistes vidéo / Find the video track
     video_track = None
     for track in media_info.tracks:
         if track.track_type == 'Video':
             video_track = track
             break
 
-    # Find the audio tracks
+    # Extraire les pistes audio / Find the audio tracks
     audio_tracks = []
     for track in media_info.tracks:
         if track.track_type == 'Audio':
             audio_tracks.append(track)
 
-    # Extract relevant information
+    # Extarire le restes des infos / Extract relevant information
     format = media_info.tracks[0].format
     codec_id = video_track.codec_id if video_track else None
     codec = map_codec(codec_id) if codec_id else None
@@ -176,7 +177,7 @@ def parse_nfo(file_path):
     global_bitrate = round(media_info.general_tracks[0].overall_bit_rate / 1000) if media_info.general_tracks and media_info.general_tracks[0].overall_bit_rate else None
     file_size = media_info.general_tracks[0].file_size if media_info.general_tracks and media_info.general_tracks[0].file_size else None
 
-    audio_details = []
+    audio_details = [] # Récupérer les détails de chaque piste audio
     for audio_track in audio_tracks:
         language = audio_track.language if hasattr(audio_track, 'language') and audio_track.language else "Unknown"
         audio_bitrate = round(audio_track.bit_rate / 1000) if audio_track.bit_rate else None
@@ -200,12 +201,12 @@ def parse_nfo(file_path):
 
 
 
-def generate_bbcode(movie_title, tmdb_id, nfo_file_path):
+def generate_bbcode(movie_title, tmdb_id, nfo_file_path): # Générer le BBCODE grâce à toute les infos
     tmdb_details = get_tmdb_details(tmdb_id)
     synopsis, rating = get_allocine_synopsis(movie_title)
     media_details = parse_nfo(nfo_file_path)
 
-    # Generate star rating image
+    # Générer une partition de d'étoiles depuis un float de 0 à 5 / Generate star rating image
     star_rating = ""
     clear = str(rating).replace(",", ".")
     if rating:
@@ -218,7 +219,7 @@ def generate_bbcode(movie_title, tmdb_id, nfo_file_path):
             star_rating += "[img]https://zupimages.net/up/24/34/gniq.png[/img]"
         star_rating += "[img]https://zupimages.net/up/24/34/60bv.png[/img]" * empty_stars
 
-    # Generate actor images
+    # Récupérer les liens vers les images des acteurs / Get actor images
     actor_images = ""
     actor_names = []
     for actor_name, actor_image in tmdb_details['actors']:
@@ -226,22 +227,24 @@ def generate_bbcode(movie_title, tmdb_id, nfo_file_path):
             actor_images += f"[img]{actor_image}[/img] "
         actor_names.append(actor_name)
 
-    # Generate language details
+    # Générer les langues / Generate language details !!!TODO!!!: make map like audio; video etc, with a fully fletched function for it. Or find lib 
     language_details = ""
     language_mapping = {
         'fr': ('fr', 'Français (VFF)'),
         'en': ('us', 'Anglais')
     }
+    # Générer des joli drapeau pour les langues etc / Generate cool flags next to lang
     for audio in media_details['audio_details']:
         language_code = audio['language'].lower() if audio['language'] != "Unknown" else "unknown"
         country_code, language_name = language_mapping.get(language_code, (language_code, audio['language']))
         language_flag = f"https://flagcdn.com/20x15/{country_code}.png"
         language_details += f"[img]{language_flag}[/img] {language_name} [{audio['audio_channels']}] | {audio['audio_codec']} à {audio['audio_bitrate']} kb/s\n"
 
-    # Convert file size to gigabytes (Go)
+    # Convertir la taille des fichier en Go / Convert file size to gigabytes (Go)
     file_size_gb = media_details['file_size'] / (1024 * 1024 * 1024) if media_details['file_size'] else None
     file_size_str = f"{file_size_gb:.2f} Go" if file_size_gb else "Unknown"
-
+    
+    # Utlitmate build !!
     bbcode = f"""
     [center][size=29][color=#aa0000][b]{movie_title}[/b][/color][/size]
 
@@ -296,13 +299,13 @@ def generate_bbcode(movie_title, tmdb_id, nfo_file_path):
     return bbcode
 
 
-def generate_nfo(file_path):
-    command = f"mediainfo {file_path} > {file_path}.nfo"
+def generate_nfo(file_path): # all in the name
+    command = f"mediainfo {file_path} > {file_path}.nfo" # forgot to say in readme but have to install mediainfo thingy, find lib instead ? # Talked with OG, lib he tested was dead, TODO when lib gets better :(
     subprocess.run(command, shell=True)
 
-def generate_torrent(file_path, tracker_url):
+def generate_torrent(file_path, tracker_url): # Gen .torrent
     output_torrent_path = f"{file_path}.torrent"
-    command = f"mktorrent -a {tracker_url} -p -o {output_torrent_path} {file_path}"
+    command = f"mktorrent -a {tracker_url} -p -o {output_torrent_path} {file_path}" # forgot to ask to install in readme, maybe find lib ?
     subprocess.run(command, shell=True)
 
 def main(args):
@@ -323,3 +326,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
+
